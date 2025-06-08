@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient'; // Ensure expo-linear-gradient is installed
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import LoadingComponent from '../components/LoadingComponent';
 import RecipeList from '../components/RecipeList';
 
 const { width } = Dimensions.get('window');
@@ -52,20 +53,20 @@ const GenerateRecipeScreen = () => {
         recepieTitleArray.push(data.recipe[i].title);
       }
 
-      const imageGenerated = await fetch('http://192.168.1.12:3001/generateImage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: recepieTitleArray,
-        }),
-      });
 
-      const result = await imageGenerated.json();
-      setNebiusImageUrl(result.generatedIMG);
+      // Commented for development
+      // const imageGenerated = await fetch('http://192.168.1.12:3001/generateImage', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     prompt: recepieTitleArray,
+      //   }),
+      // });
 
-      const recipes = generatedRecipe.recipe;
+      // const result = await imageGenerated.json();
+      // setNebiusImageUrl(result.generatedIMG);
 
 
 
@@ -91,7 +92,7 @@ const GenerateRecipeScreen = () => {
           fontSize: 28,
           fontWeight: 'bold',
           marginTop: 20,
-          color: '#d9d3e8', 
+          color: '#d9d3e8',
           textAlign: 'center',
           marginBottom: 30,
           textShadowColor: 'rgba(0, 0, 0, 0.7)',
@@ -113,7 +114,7 @@ const GenerateRecipeScreen = () => {
             marginBottom: 20,
             borderWidth: 1,
             borderColor: 'rgba(255, 255, 255, 0.3)',
-            height: 120, 
+            height: 120,
             textAlignVertical: 'top',
           }}
           placeholder="e.g., 'A quick vegetarian dinner with broccoli and pasta' or 'High protein snack for after workout'"
@@ -123,11 +124,11 @@ const GenerateRecipeScreen = () => {
           onChangeText={setRecipePrompt}
         />
 
-       
+
         <View style={{
           flexDirection: 'row',
-          flexWrap: 'wrap', 
-          justifyContent: 'center', 
+          flexWrap: 'wrap',
+          justifyContent: 'center',
           marginBottom: 30,
           width: '100%',
         }}>
@@ -135,11 +136,11 @@ const GenerateRecipeScreen = () => {
             <TouchableOpacity
               key={index}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.15)', 
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
                 paddingVertical: 10,
                 paddingHorizontal: 15,
-                borderRadius: 20, 
-                margin: 5, 
+                borderRadius: 20,
+                margin: 5,
                 borderWidth: 1,
                 borderColor: 'rgba(255, 255, 255, 0.3)',
               }}
@@ -188,14 +189,16 @@ const GenerateRecipeScreen = () => {
             </Text>
           )}
         </TouchableOpacity>
-
-        {generatedRecipe.recipe?.length > 0 && (
-          <RecipeList recipes={generatedRecipe.recipe.map((recipe, index) => ({
-            ...recipe,
-            imageLink: nebiusImageUrl[index] || "",
-          }))} />
-        )}
-
+        {loading
+          ? (< LoadingComponent />) : (
+            generatedRecipe.recipe?.length > 0 && (
+              <RecipeList recipes={generatedRecipe.recipe.map((recipe, index) => ({
+                ...recipe,
+                imageLink: nebiusImageUrl[index] || "",
+              }))} />
+            )
+          )
+        }
       </ScrollView>
     </LinearGradient>
   );

@@ -12,9 +12,10 @@ const RecipeList = ({ recipes }) => {
   };
 
   return (
-    <View style={{ padding: 20,
-        width : width
-     }}>
+    <View style={{
+      padding: 20,
+      width: width
+    }}>
       {recipes?.length > 0 && recipes.map((item, index) => (
         <TouchableOpacity
           key={index}
@@ -26,12 +27,11 @@ const RecipeList = ({ recipes }) => {
             padding: 10,
             marginBottom: 15,
             borderWidth: 1,
-            height : 140,
+            height: 140,
             borderColor: 'rgba(255, 255, 255, 0.2)',
             alignItems: 'center',
           }}
         >
-          {/* Left Image */}
           <Image
             source={{ uri: item.imageLink }}
             style={{
@@ -43,7 +43,6 @@ const RecipeList = ({ recipes }) => {
             resizeMode="cover"
           />
 
-          {/* Right Content */}
           <View style={{ flex: 1 }}>
             <Text style={{
               fontSize: 16,
@@ -57,7 +56,7 @@ const RecipeList = ({ recipes }) => {
               color: '#E0E0E0',
               fontSize: 14,
             }}
-              numberOfLines={2} 
+              numberOfLines={2}
               ellipsizeMode="tail"
             >
               {item.ingredients}
@@ -113,10 +112,21 @@ const RecipeList = ({ recipes }) => {
               <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#b0ebdd', marginBottom: 5 }}>
                 Instructions:
               </Text>
-              <Text style={{ color: '#E0E0E0', fontSize: 16 }}>
-                {selectedRecipe.recipeInstructions}
+              <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#b0ebdd', marginBottom: 5 }}>
+                {selectedRecipe.recipeInstructions.split(/\n|(?=\d+\.\s)/).map((step, index) => (
+                  <Text
+                    key={index}
+                    style={{
+                      color: '#E0E0E0',
+                      fontSize: 16,
+                      lineHeight: 24,
+                      marginBottom: 8,
+                    }}
+                  >
+                    {step.trim()}
+                  </Text>
+                ))}
               </Text>
-
               <TouchableOpacity
                 style={{
                   marginTop: 30,

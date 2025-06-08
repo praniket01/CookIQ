@@ -14,9 +14,9 @@ const generaterecepie = () => {
     return (
     <LinearGradient
       colors={[
-        '#2a3a5b', // Dark blue start
-        '#1a2a4b', // Slightly darker blue middle
-        '#0f1538', // Even darker blue end (matching app's main gradient start)
+        '#2a3a5b', 
+        '#1a2a4b', 
+        '#0f1538', 
       ]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
