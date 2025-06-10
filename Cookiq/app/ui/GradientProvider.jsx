@@ -5,10 +5,10 @@ import { StyleSheet } from 'react-native';
 const GradientBackground = ({ children, style }) => {
   return (
     <LinearGradient
-      colors={['#0f1538', '#131624', '#0d0e12']} // Your desired dark gradient colors
+      colors={['#0f1538', '#131624', '#0d0e12']} 
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      // Merge default styles with any custom styles passed via props
+      
       style={[styles.gradient, style]}
     >
       {children}

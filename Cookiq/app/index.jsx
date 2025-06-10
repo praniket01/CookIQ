@@ -1,24 +1,34 @@
-import { useRouter } from "expo-router";
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { onAuthStateChanged } from "firebase/auth";
-import { useContext, useEffect } from "react";
-import { Dimensions, Image, Text, View } from "react-native";
-import Button from "../components/shared/Button";
-import { UserDetailContext } from "../context/UserDetailContext";
-import "../global.css";
-import auth from "../services/FirebaseConfig";
-import colors from "../shared/colors";
+import { useRef } from 'react';
+import { Animated, Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { GradientBackground } from "../app/ui/GradientProvider";
+import FeaturesComponent from './components/FeaturesComponent';
+import { Navbar } from './components/Navbar';
 
-export default function Index() {
+
+import auth from "../services/FirebaseConfig";
+
+import { useContext, useEffect } from 'react';
+import { UserDetailContext } from "../context/UserDetailContext";
+
+const { height, width } = Dimensions.get('window');
+const IMAGE_HEIGHT = height * 0.5;
+const COLLAPSE_HEIGHT = height * 0.1;
+const SCROLL_DISTANCE = IMAGE_HEIGHT * 0.8;
+
+const HomePage = () => {
 
   const router = useRouter();
   const { user, setUser } = useContext(UserDetailContext);
 
   useEffect(() => {
-   
+
     const unSubscribe = onAuthStateChanged(auth, async (userInfo) => {
 
-      if(!userInfo)
-      {
+      if (!userInfo) {
         return;
       }
 
@@ -33,11 +43,11 @@ export default function Index() {
       })
       if (res.ok) {
         const data = await res.json();
-        if(data && data.userDetail){
-        setUser(data.userDetail);
-        router.replace('/(tabs)/Home');
+        if (data && data.userDetail) {
+          setUser(data.userDetail);
+          router.replace('/(tabs)/Home');
         }
-        else{
+        else {
           router.replace('/preferences');
         }
 
@@ -46,80 +56,169 @@ export default function Index() {
     return () => unSubscribe();
   }, [])
 
-  return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      <Image source={require('../assets/images/homepage2.png')}
-        style={
-          {
-            width: '100%',
-            height: Dimensions.get('screen').height,
-            opacity: 0.8
-          }
-        }
-      />
-      <View style={
-        {
-          position: "absolute",
-          height: Dimensions.get("screen").height,
-          backgroundColor: "#0707075e",
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          padding: 15
-        }
-      }>
-        <Image source={require("../assets/images/logo.png")}
-          style={{
-            width: 100,
-            height: 100,
-            marginTop: 100,
 
-          }}
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const animatedImageHeight = scrollY.interpolate({
+    inputRange: [0, SCROLL_DISTANCE],
+    outputRange: [IMAGE_HEIGHT, COLLAPSE_HEIGHT],
+    extrapolate: 'clamp',
+  });
+
+  const animatedImageOpacity = scrollY.interpolate({
+    inputRange: [0, SCROLL_DISTANCE / 2, SCROLL_DISTANCE],
+    outputRange: [1, 0.5, 0],
+    extrapolate: 'clamp',
+  });
+
+
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+    <GradientBackground>
+    <Navbar />
+      <Animated.ScrollView
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={5}
+        contentContainerStyle={{ paddingBottom: 10, flexGrow: 1 }}
+      >
+        
+        <Animated.Image
+           source={require('../assets/images/homepage2.png')}
+          style={[
+            {
+              width: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            },
+            { height: animatedImageHeight, opacity: animatedImageOpacity },
+          ]}
+          resizeMode="cover"
         />
-        <Text
-          style={
+
+        <Animated.View
+          style={[
             {
-              fontSize: 30,
-              fontWeight: "bold",
-              color: colors.WHITE
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+            },
+            { height: animatedImageHeight, opacity: animatedImageOpacity.interpolate({
+                inputRange: [0, SCROLL_DISTANCE],
+                outputRange: [0.3, 0.8],
+                extrapolate: 'clamp'
+              })
             }
-          }
-        >
-          COOKIQ
-        </Text>
-        <Text
-          style={
+          ]}
+        />
+
+
+        <Animated.View
+          style={[
             {
-              textAlign: "center",
-              marginHorizontal: 20,
-              fontSize: 20,
-              fontStyle: "italic",
-              fontFamily: "serif",
-              color: colors.WHITE,
-              marginTop: 300,
-              fontWeight: "bold",
-              opacity: 0.8
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0, 
+            },
+            { height: animatedImageHeight, opacity: animatedImageOpacity.interpolate({
+                inputRange: [0, SCROLL_DISTANCE],
+                outputRange: [1, 0], 
+                extrapolate: 'clamp'
+              })
             }
-          }
+          ]}
         >
-          Smarter eating starts with intelligent planning. AI-powered nutrition, tailored for you.
-        </Text>
+          <LinearGradient
+            colors={['transparent', 'rgba(13, 14, 18, 0.9)', '#0d0e12']} 
+            start={{ x: 0, y: 0 }} 
+            end={{ x: 0, y: 1 }}  
+            style={{ flex: 1 }}
+          />
+        </Animated.View>
         <View style={{
-          position: "absolute",
-          width: "100%",
-          bottom: 30,
-          marginBottom: 20,
-          padding: 20
+          marginTop: IMAGE_HEIGHT - 30,
+          backgroundColor: '#0d0e12',
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          paddingHorizontal: 20,
+          paddingVertical: 30,
+          zIndex: 1,
+          width: '100%',
         }}>
-          <Button
-            backgroundColor="#7314d9"
-            onPress={() => { router.push("/auth/Signin") }} title={"Get Started"} />
+          <Text style={{
+            fontSize: 28,
+            fontWeight: 'bold',
+            color: '#d9d3e8',
+            textAlign: 'center',
+            marginBottom: 15,
+            textShadowColor: 'rgba(0, 0, 0, 0.7)',
+            textShadowOffset: { width: 1, height: 1 },
+            textShadowRadius: 3,
+          }}>
+            Welcome to Cookiq!
+          </Text>
+          <Text style={{
+            fontSize: 16,
+            color: '#E0E0E0',
+            textAlign: 'center',
+            lineHeight: 24,
+            marginBottom: 40,
+            opacity: 0.9,
+          }}>
+            CookIQ is your intelligent nutrition companion. We help you effortlessly track your calorie intake, understand your dietary needs, and generate delicious, personalized recipes tailored just for you. Say goodbye to guesswork and hello to smart eating!
+          </Text>
+
+          <FeaturesComponent scrollY={scrollY} />
+
+          <TouchableOpacity onPress={() => { router.push("/auth/Signin") }} style={{
+            width: '50%',
+            maxWidth: 300,
+            alignSelf: 'center',
+            // marginTop: 40,
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.7,
+            shadowRadius: 15,
+          }}>
+            <LinearGradient
+              colors={['#10b589', '#65ad99', '#75b4c7']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                borderRadius: 15,
+                padding: 20,
+                flex: 1,
+                borderWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.15)',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{
+                color: '#fff',
+                fontSize: 22,
+                fontWeight: 'bold',
+                textAlign: 'center',
+                textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 2,
+              }}>
+                Get Started
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </Animated.ScrollView>
+    </GradientBackground>
+    </SafeAreaView>
   );
-}
+};
+
+export default HomePage;
