@@ -47,7 +47,6 @@ const CircularSpeedometer = ({
           />
         </G>
       </Svg>
-      {/* Central text displaying value and label */}
       <View style={{
         position: 'absolute', 
         left: 0,
