@@ -1,12 +1,8 @@
-import { LinearGradient } from 'expo-linear-gradient'
-import { Link, useRouter } from 'expo-router'
-import { useContext, useState } from 'react'
-import { Alert, Image, Text, View } from 'react-native'
-import Button from '../../components/shared/Button'
-import Input from '../../components/shared/Input'
-import { UserDetailContext } from "../../context/UserDetailContext.jsx"
-// import auth from '../../services/FirebaseConfig.js'
-import colors from '../../shared/colors'
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link, useRouter } from 'expo-router';
+import { useContext, useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { UserDetailContext } from "../../context/UserDetailContext.jsx";
 
 const router = useRouter();
 
@@ -52,56 +48,98 @@ const Signin = () => {
             });
 
     }
-
     return (
         <LinearGradient
             colors={['#2c3e50', '#000000']}
             style={{ flex: 1 }}
         >
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 20,
+                }}
+            >
 
-            <View style={{
-                display: "flex",
-                alignItems: "center",
-            }}>
                 <Image
-                    style={{
-                        width: 150,
-                        height: 150,
-                        marginTop: 100
+                    source={require('../../assets/images/LoginImg.png')}
+                    contentFit="cover"
+                    style = {{
+                        height : 500,
+                        width : 500,
+                        marginBottom : 150
                     }}
-                    source={require('../../assets/images/logo.png')} />
-                <Text style={{
-                    fontWeight: "bold",
-                    fontSize: 35,
-                    color: colors.WHITE,
-                    fontFamily: "Gill Sans",
-                    marginTop: 20
-                }}>
-                    Welcome back
-                </Text>
-                <View style={{
-                    marginTop: 50,
-                    width: '90%',
-                }}>
-                    <Input placeholder="Email" onChangeText={setEmail} />
-                    <Input placeholder="Password" password={true} onChangeText={setPassword} />
-
-                </View>
-                <View
-                    style={{
-                        marginTop: 15,
-                        width: "90%"
-                    }}
-                >
-
-                    <Button
-                        title="Sign In"
-                        backgroundColor="#05e841"
-                        onPress={() => { onClick() }}
+                />
+                <View style={{ width: '100%', marginTop: -20 }}>
+                    <TextInput
+                        style={{
+                            height: 50,
+                            backgroundColor: '#1c1c2e',
+                            borderRadius: 12,
+                            paddingHorizontal: 15,
+                            marginBottom: 20,
+                            color: '#fff',
+                            fontSize: 16,
+                        }}
+                        placeholder="Email"
+                        placeholderTextColor="#ccc"
+                        onChangeText={setEmail}
+                        value={email}
+                        keyboardType="email-address"
                     />
 
+                    <TextInput
+                        style={{
+                            height: 50,
+                            backgroundColor: '#1c1c2e',
+                            borderRadius: 12,
+                            paddingHorizontal: 15,
+                            marginBottom: 20,
+                            color: '#fff',
+                            fontSize: 16,
+                        }}
+                        placeholder="Password"
+                        placeholderTextColor="#ccc"
+                        secureTextEntry
+                        onChangeText={setPassword}
+                        value={password}
+                    />
+
+                    {/* Sign In Button */}
+                    <TouchableOpacity
+                        onPress={onClick}
+                        style={{
+                            marginTop: 10,
+                            borderRadius: 15,
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <LinearGradient
+                            colors={['#10b589', '#65ad99', '#75b4c7']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={{
+                                paddingVertical: 14,
+                                alignItems: 'center',
+                                borderRadius: 15,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: '#fff',
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                Sign In
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+
                     <Text style={{
-                        color: colors.WHITE, textAlign: "center",
+                        color: "white", textAlign: "center",
                         fontSize: 15, marginTop: 15
                     }}>Don't have an Account?
                     </Text>
@@ -115,11 +153,14 @@ const Signin = () => {
 
                         </Text>
                     </Link>
-                </View >
-            </View>
+
+                </View>
+            </KeyboardAvoidingView>
+
         </LinearGradient>
 
-    )
-}
+    );
+};
 
-export default Signin
+export default Signin;
+
