@@ -10,6 +10,7 @@ const { width } = Dimensions.get('window');
 const GenerateRecipeScreen = () => {
   const [recipePrompt, setRecipePrompt] = useState('');
   const [generatedRecipe, setGeneratedRecipe] = useState([]);
+  const [suggestionSelected,setSuggestionSelected] = useState(null);
   const [loading, setLoading] = useState(false);
   const [nebiusImageUrl, setNebiusImageUrl] = useState([]);
 
@@ -21,9 +22,11 @@ const GenerateRecipeScreen = () => {
 
   const handleSuggestionPress = (suggestion) => {
 
-    setRecipePrompt(prevPrompt =>
-      prevPrompt ? `${prevPrompt}, ${suggestion}` : suggestion
-    );
+    // setRecipePrompt(prevPrompt =>
+    //   prevPrompt ? `${prevPrompt}, ${suggestion}` : suggestion
+    // );
+    setRecipePrompt(suggestion);
+    setSuggestionSelected(suggestion);
   };
 
   const handleSubmit = async () => {
@@ -76,6 +79,8 @@ const GenerateRecipeScreen = () => {
     } finally {
       setLoading(false);
       setRecipePrompt('');
+      setSuggestionSelected(null);
+
     }
   };
 
@@ -132,17 +137,22 @@ const GenerateRecipeScreen = () => {
           marginBottom: 30,
           width: '100%',
         }}>
-          {suggestionCategories.map((category, index) => (
+          {suggestionCategories.map((category, index) => 
+          
+         {
+          const isSelected = suggestionSelected === category;
+
+          return (
             <TouchableOpacity
               key={index}
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                paddingVertical: 10,
+                paddingVertical: 5,
                 paddingHorizontal: 15,
                 borderRadius: 20,
                 margin: 5,
                 borderWidth: 1,
-                borderColor: 'rgba(255, 255, 255, 0.3)',
+                borderColor: isSelected ? '#03fcec' : 'rgba(255, 255, 255, 0.3)',
               }}
               onPress={() => handleSuggestionPress(category)}
             >
@@ -150,11 +160,13 @@ const GenerateRecipeScreen = () => {
                 color: '#E0E0E0',
                 fontSize: 14,
                 fontWeight: 'bold',
+                borderColor: isSelected ? '#03fcec' : 'rgba(255, 255, 255, 0.3)',
+                
               }}>
                 {category}
               </Text>
             </TouchableOpacity>
-          ))}
+          )})}
         </View>
 
         <TouchableOpacity
@@ -185,7 +197,7 @@ const GenerateRecipeScreen = () => {
               textShadowOffset: { width: 1, height: 1 },
               textShadowRadius: 2,
             }}>
-              Submit Request
+              Generate Recepie
             </Text>
           )}
         </TouchableOpacity>

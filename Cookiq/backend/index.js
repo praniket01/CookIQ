@@ -43,8 +43,8 @@ app.post('/users', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-   const randomIndex = Math.floor(Math.random() * 150) + 1;
-   const profilePic = `https://avatar.iran.liara.run/public/${randomIndex}.png`
+    const randomIndex = Math.floor(Math.random() * 150) + 1;
+    const profilePic = `https://avatar.iran.liara.run/public/${randomIndex}.png`
     const newUser = await prisma.user.create({
       data: {
         name: name,
@@ -65,6 +65,42 @@ app.post('/users', async (req, res) => {
   }
 });
 
+app.post('/addMealtoDaysPlan', async (req, res) => {
+  try {
+    const email = req.body.email;
+    const recepie = req.body.recepie;
+    const addRecepie = await prisma.userMeal.create({
+    data:{
+      email : email,
+      recepies : recepie
+    }
+    })
+    if(addRecepie){
+      res.status(200).json({ message: 'Meal added successfully', data : addRecepie });
+    }
+    
+  } catch (error) {
+    console.error('Error adding meal:', error);
+    res.status(500).json({ message: 'Failed to add meal', error });
+  }
+})
+
+app.post('/getDataOnRefresh', async (req, res) => {
+  try {
+    const email = req.body.email;
+    const recepies = await prisma.user.findFirst({
+      where: {
+        email: email
+      }
+    })
+
+    if (recepies)
+      return res.status(200).json({ recepies })
+  } catch (error) {
+
+  }
+})
+
 app.post('/getuserdetails', async (req, res) => {
   try {
     const email = req.body.email;
@@ -73,7 +109,7 @@ app.post('/getuserdetails', async (req, res) => {
         email: email
       }
     })
-    
+
     if (userDetail)
       return res.status(200).json({ userDetail })
   } catch (error) {
@@ -82,28 +118,28 @@ app.post('/getuserdetails', async (req, res) => {
 })
 
 app.post('/updateprofile', async (req, res) => {
-  const {email,height,
-    weight,goal,gender,calories,Proteins
+  const { email, height,
+    weight, goal, gender, calories, Proteins
   } = req.body;
   try {
     const updateUserProfile = await prisma.user.update({
-      where : {
-        email : email
+      where: {
+        email: email
       },
-      data : {
-        height : height,
-        weight : weight,
-        goal :  goal,
-        gender : gender,
-        calories : calories,
-        Proteins : Proteins
+      data: {
+        height: height,
+        weight: weight,
+        goal: goal,
+        gender: gender,
+        calories: calories,
+        Proteins: Proteins
       }
     })
-    if(!updateUserProfile){
-      return res.status(404).json({message : "User not found"})
+    if (!updateUserProfile) {
+      return res.status(404).json({ message: "User not found" })
     }
-    if(updateUserProfile){
-      return res.status(200).json({user : updateUserProfile})
+    if (updateUserProfile) {
+      return res.status(200).json({ user: updateUserProfile })
     }
 
 

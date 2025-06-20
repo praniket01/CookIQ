@@ -25,3 +25,10 @@ model User {
   calories     String?
   Proteins     String?
 }
+
+
+model UserMeal {
+  id        Int      @id @default(autoincrement())
+  email        String  
+  recepies     Json
+}

@@ -1,6 +1,7 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { GradientBackground } from '../ui/GradientProvider';
+import { GradientBackground } from "../ui/GradientProvider";
 const { width } = Dimensions.get('window');
 
 const RecipeList = ({ recipes }) => {
@@ -66,13 +67,13 @@ const RecipeList = ({ recipes }) => {
         </TouchableOpacity>
       ))}
 
-      
-        <Modal
-          visible={modalVisible}
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <GradientBackground>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <GradientBackground>
           <ScrollView contentContainerStyle={{ padding: 20, minHeight: Dimensions.get('window').height }}>
             {selectedRecipe && (
               <>
@@ -130,10 +131,17 @@ const RecipeList = ({ recipes }) => {
                     </Text>
                   ))}
                 </Text>
-                <TouchableOpacity
+                <LinearGradient
+                  colors={['#ff0011', '#c42d55', '#b52465']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
                   style={{
                     marginTop: 30,
-                    backgroundColor: '#a81e41',
+                    borderRadius: 10,
+                  }}
+                >
+                <TouchableOpacity
+                  style={{
                     padding: 15,
                     borderRadius: 10,
                     alignItems: 'center',
@@ -148,29 +156,40 @@ const RecipeList = ({ recipes }) => {
                     Close
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                </LinearGradient>
+                <LinearGradient
+                  colors={['#10b589', '#65ad99', '#75b4c7']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
                   style={{
                     marginTop: 30,
-                    backgroundColor: '#63e68a',
-                    padding: 15,
                     borderRadius: 10,
-                    alignItems: 'center',
                   }}
-                  onPress={() => setModalVisible(false)}
                 >
-                  <Text style={{
-                    color: '#fff',
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                  }}>
-                    ✔ Add meal to today's plan
-                  </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      padding: 15,
+                      borderRadius: 10,
+                      alignItems: 'center',
+                    }}
+                    onPress={() => setModalVisible(false)}
+                  >
+
+                    <Text style={{
+                      color: '#fff',
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                    }}>
+                      ✔ Add meal to today's plan
+                    </Text>
+
+                  </TouchableOpacity>
+                </LinearGradient>
               </>
             )}
           </ScrollView>
-          </GradientBackground>
-        </Modal>
+        </GradientBackground>
+      </Modal>
     </View>
   );
 };

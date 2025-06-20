@@ -10,12 +10,30 @@ import { GradientBackground } from "../ui/GradientProvider";
 
 const Home = () => {
 
+const onPageRefresh = async () => {
+  const email = user.email;
+  const res = await fetch('http://192.168.1.12:3000/getDataOnRefresh',{
+     method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email : email
+        })
+  })
+
+  const data = await res.json();
+  console.log(data);
+}
+
   const { user } = useContext(UserDetailContext);
   const router = useRouter();
   useEffect(() => {
     if (!user.weight) {
       router.replace('/preference')
     }
+
+    onPageRefresh();
   }, [])
 
   return (
