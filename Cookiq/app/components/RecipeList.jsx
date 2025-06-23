@@ -1,18 +1,59 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import { useMealContext } from '../../context/MealContext';
+import { UserDetailContext } from "../../context/UserDetailContext";
 import { GradientBackground } from "../ui/GradientProvider";
 const { width } = Dimensions.get('window');
 
 const RecipeList = ({ recipes }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const { user } = useContext(UserDetailContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const { meals, addMeal } = useMealContext();
+
 
   const handleCardPress = (recipe) => {
     setSelectedRecipe(recipe);
     setModalVisible(true);
   };
 
+  const addRecepieToPlan = async () => {
+    try {
+      const email = user.email;
+      const res = await fetch('http://192.168.1.12:3000/addMealtoDaysPlan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          recepie: selectedRecipe
+        })
+      })
+
+      const body = await res.json();
+      if (body.ok) {
+        // Alert.alert("Information", " MEAL Added");
+        Toast.show({
+          type: "success",
+          text1: "Meal Added",
+          position: "bottom"
+        })
+        setModalVisible(false);
+        for (let i = 0; i < recipes.length; i++) {
+          if (recipes[i].title === selectedRecipe.title) {
+            recipes.splice(i, 1);
+            addMeal(selectedRecipe)
+          }
+        }
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <View style={{
       padding: 20,
@@ -140,22 +181,22 @@ const RecipeList = ({ recipes }) => {
                     borderRadius: 10,
                   }}
                 >
-                <TouchableOpacity
-                  style={{
-                    padding: 15,
-                    borderRadius: 10,
-                    alignItems: 'center',
-                  }}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={{
-                    color: '#fff',
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                  }}>
-                    Close
-                  </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      padding: 15,
+                      borderRadius: 10,
+                      alignItems: 'center',
+                    }}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={{
+                      color: '#fff',
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                    }}>
+                      Close
+                    </Text>
+                  </TouchableOpacity>
                 </LinearGradient>
                 <LinearGradient
                   colors={['#10b589', '#65ad99', '#75b4c7']}
@@ -172,7 +213,7 @@ const RecipeList = ({ recipes }) => {
                       borderRadius: 10,
                       alignItems: 'center',
                     }}
-                    onPress={() => setModalVisible(false)}
+                    onPress={addRecepieToPlan}
                   >
 
                     <Text style={{

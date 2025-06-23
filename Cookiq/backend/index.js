@@ -69,14 +69,33 @@ app.post('/addMealtoDaysPlan', async (req, res) => {
   try {
     const email = req.body.email;
     const recepie = req.body.recepie;
-    const addRecepie = await prisma.userMeal.create({
-    data:{
-      email : email,
-      recepies : recepie
-    }
-    })
+    const addRecepie = await prisma.userMeal.findFirst({
+    where : {email:email}
+    // orderBy : {createdAt : 'desc'}
+    });
+    console.log(addRecepie)
     if(addRecepie){
-      res.status(200).json({ message: 'Meal added successfully', data : addRecepie });
+      
+      const updateRecepies = Array.isArray(addRecepie.recepies)
+      ?[...addRecepie.recepies,recepie]
+      :[addRecepie.recepies,recepie]
+
+      await prisma.userMeal.update({
+        where : {id : addRecepie.id},
+        data : {recepies : updateRecepies}
+      })
+      
+      res.status(200).json({ message: 'Meal added successfully', data : addRecepie, ok:true });
+    }
+    else{
+      await prisma.userMeal.create({
+      data: {
+        email : email,
+        recepies: [recepie] 
+      }
+    });
+
+    res.status(200).json({ message: 'New user recipe record created',ok:true });
     }
     
   } catch (error) {
@@ -88,7 +107,7 @@ app.post('/addMealtoDaysPlan', async (req, res) => {
 app.post('/getDataOnRefresh', async (req, res) => {
   try {
     const email = req.body.email;
-    const recepies = await prisma.user.findFirst({
+    const recepies = await prisma.userMeal.findFirstOrThrow({
       where: {
         email: email
       }
@@ -97,7 +116,7 @@ app.post('/getDataOnRefresh', async (req, res) => {
     if (recepies)
       return res.status(200).json({ recepies })
   } catch (error) {
-
+    console.log(error)
   }
 })
 
