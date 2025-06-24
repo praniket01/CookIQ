@@ -65,6 +65,35 @@ app.post('/users', async (req, res) => {
   }
 });
 
+app.post('/markAsComplete', async (req, res) => {
+  const { email, title } = req.body;
+
+  try {
+    const userMeal = await prisma.userMeal.findFirstOrThrow({
+      where: { email },
+    });
+
+    if (!userMeal || !userMeal.recepies) {
+      return res.status(404).json({ message: 'User or meals not found' });
+    }
+
+    const updatedMeals = userMeal.recepies.filter(meal => meal.title !== title);
+
+    await prisma.userMeal.update({
+      where: { email },
+      data: {
+        recepies: updatedMeals,
+      },
+    });
+
+    res.status(200).json({ message: 'Meal deleted successfully', updatedMeals });
+  } catch (error) {
+    console.error('Error deleting meal:', error);
+    res.status(500).json({ message: 'Failed to delete meal', error });
+  }
+});
+
+
 app.post('/addMealtoDaysPlan', async (req, res) => {
   try {
     const email = req.body.email;

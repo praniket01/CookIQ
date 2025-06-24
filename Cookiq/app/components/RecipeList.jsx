@@ -21,34 +21,48 @@ const RecipeList = ({ recipes }) => {
 
   const addRecepieToPlan = async () => {
     try {
-      const email = user.email;
-      const res = await fetch('http://192.168.1.12:3000/addMealtoDaysPlan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          recepie: selectedRecipe
-        })
-      })
 
-      const body = await res.json();
-      if (body.ok) {
-        // Alert.alert("Information", " MEAL Added");
-        Toast.show({
-          type: "success",
-          text1: "Meal Added",
-          position: "bottom"
+      if (meals.length < 3) {
+        console.log("Meals count : ", meals.length)
+        const email = user.email;
+        const res = await fetch('http://192.168.1.12:3000/addMealtoDaysPlan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            recepie: selectedRecipe
+          })
         })
-        setModalVisible(false);
-        for (let i = 0; i < recipes.length; i++) {
-          if (recipes[i].title === selectedRecipe.title) {
-            recipes.splice(i, 1);
-            addMeal(selectedRecipe)
+
+        const body = await res.json();
+        if (body.ok) {
+          // Alert.alert("Information", " MEAL Added");
+          Toast.show({
+            type: "success",
+            text1: "Meal Added",
+            position: "bottom"
+          })
+          setModalVisible(false);
+          for (let i = 0; i < recipes.length; i++) {
+            if (recipes[i].title === selectedRecipe.title) {
+              recipes.splice(i, 1);
+              addMeal(selectedRecipe)
+            }
           }
         }
       }
+      else {
+        Toast.show({
+          type: "error",
+          text1: "Meals Limit reached" ,
+          text2 : "You've already added 3 meals today",
+          position: "bottom"
+        })
+        setModalVisible(false);
+      }
+
 
     } catch (error) {
       console.log(error)

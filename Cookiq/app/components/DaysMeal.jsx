@@ -1,21 +1,42 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useMealContext } from '../../context/MealContext';
+import { UserDetailContext } from '../../context/UserDetailContext';
 import { GradientHeading } from './GradientHeading';
 
 const DaysMeal = ({ mealList }) => {
 
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const {user} = useContext(UserDetailContext);
+  const {meals,setMeals} = useMealContext();
 
   const handleCardPress = (meal) => {
     setSelectedMeal(meal);
     setModalVisible(true);
   };
 
-  const markMealAsComplete = () => {
-    console.log("Meal marked as complete:", selectedMeal?.title);
+  const markMealAsComplete = async () => {
+    // console.log("Meal marked as complete:", selectedMeal?.title);
+    const email = user.email;
+    const res = await fetch('http://192.168.1.12:3000/markAsComplete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        title : selectedMeal.title
+      })
+    }
+    );
+
+    const data = await res.json();
+    setMeals((prevMeals) => prevMeals.filter(m => m.title !== selectedMeal.title));
     setModalVisible(false);
+
+
   };
 
 
@@ -44,7 +65,7 @@ const DaysMeal = ({ mealList }) => {
   }
 
   return (
-    <ScrollView style={{ padding:5 , marginBottom: 70 }}>
+    <ScrollView style={{ padding: 5, marginBottom: 70 }}>
 
       <GradientHeading />
       {mealList.map((item, index) => (
@@ -61,13 +82,13 @@ const DaysMeal = ({ mealList }) => {
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.2,
             shadowRadius: 4,
-            marginBottom :15,
+            marginBottom: 15,
             // elevation: 3,
             overflow: 'hidden'
           }}
         >
           <LinearGradient
-            colors={['#ced4f5', '#6cc4f0','#6771ab']}
+            colors={['#ced4f5', '#6cc4f0', '#6771ab']}
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -102,7 +123,7 @@ const DaysMeal = ({ mealList }) => {
           }}
         >
           <LinearGradient
-            colors={['#c8f7f7', '#dff5f5','#f0fafa']}
+            colors={['#c8f7f7', '#dff5f5', '#f0fafa']}
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -110,57 +131,69 @@ const DaysMeal = ({ mealList }) => {
               borderRadius: 20,
             }}
           >
-          <View
-            style={{
-              // backgroundColor: 'white',
-              borderRadius: 10,
-              padding: 20,
-              // shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              // shadowOpacity: 0.3,
-              shadowRadius: 4,
-              // elevation: 5,
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
-              {selectedMeal?.title}
-            </Text>
-            <Text style={{ fontSize: 16, marginBottom: 5 }}>
-              <Text style={{ fontWeight: 'bold'}} >Calories:</Text> {selectedMeal?.calories}
-            </Text>
-            <Text style={{ fontSize: 16, marginBottom: 5 }}>
-              <Text style={{ fontWeight: 'bold'}} >Proteins:</Text> {selectedMeal?.proteins}
-            </Text>
-            <Text style={{ fontSize: 16, marginBottom: 5 }}>
-              <Text style={{ fontWeight: 'bold'}} >Ingredients:</Text> {selectedMeal?.ingredients}
-            </Text>
-            <Text style={{ fontSize: 16, marginBottom: 10 }}>
-              <Text style={{ fontWeight: 'bold'}} >Instructions:</Text> {selectedMeal?.recipeInstructions || "No instructions provided."}
-            </Text>
-
-            <TouchableOpacity
-              onPress={markMealAsComplete}
+            <View
               style={{
-                backgroundColor: '#10b589',
-                padding: 12,
-                borderRadius: 8,
-                alignItems: 'center',
-                marginTop: 10,
+                // backgroundColor: 'white',
+                borderRadius: 10,
+                padding: 20,
+                // shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                // shadowOpacity: 0.3,
+                shadowRadius: 4,
+                // elevation: 5,
               }}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Mark as Complete</Text>
-            </TouchableOpacity>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
+                {selectedMeal?.title}
+              </Text>
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>
+                <Text style={{ fontWeight: 'bold' }} >Calories:</Text> {selectedMeal?.calories}
+              </Text>
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>
+                <Text style={{ fontWeight: 'bold' }} >Proteins:</Text> {selectedMeal?.proteins}
+              </Text>
+              <Text style={{ fontSize: 16, marginBottom: 5 }}>
+                <Text style={{ fontWeight: 'bold' }} >Ingredients:</Text> {selectedMeal?.ingredients}
+              </Text>
+              <Text style={{ fontSize: 16, marginBottom: 10 }}>
+                <Text style={{ fontWeight: 'bold' }} >Instructions:</Text> {selectedMeal?.recipeInstructions || "No instructions provided."}
+              </Text>
 
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={{
-                marginTop: 10,
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#999', fontSize: 14 }}>Close</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                onPress={markMealAsComplete}
+                style={{
+                  backgroundColor: '#fa7b57',
+                  padding: 12,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Remove meal from Meal List</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={markMealAsComplete}
+                style={{
+                  backgroundColor: '#10b589',
+                  padding: 12,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Mark meal as Completed</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={{
+                  marginTop: 10,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: '#999', fontSize: 14 }}>Close</Text>
+              </TouchableOpacity>
+            </View>
           </LinearGradient>
         </View>
       </Modal>
