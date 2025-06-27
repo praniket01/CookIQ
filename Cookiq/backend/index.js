@@ -56,17 +56,36 @@ app.post('/users', async (req, res) => {
       }
     }
     );
-    // Send a success response back to the frontend
     res.status(201).json({ message: 'User registered successfully!', user: newUser });
   } catch (error) {
     console.error('Error registering user:', error);
-    // Send an error response back to the frontend
     res.status(500).json({ message: 'Internal server error during user registration.' });
   }
 });
 
+
+app.post('/getUserCalories', async (req, res) => {
+
+  try {
+    const email = req.body.email;
+    const data = await prisma.userMeal.findFirstOrThrow({
+      where: {
+        email: email
+      }
+    })
+
+    if (data)
+      return res.status(200).json({ data, "ok": true });
+    else
+      return res.status(304).json({ "ok": false })
+  } catch (error) {
+    console.log(error)
+  }
+
+})
+
 app.post('/markAsComplete', async (req, res) => {
-  const { email, title } = req.body;
+  const { email, title, calories, proteins } = req.body;
 
   try {
     const userMeal = await prisma.userMeal.findFirstOrThrow({
@@ -83,10 +102,12 @@ app.post('/markAsComplete', async (req, res) => {
       where: { email },
       data: {
         recepies: updatedMeals,
+        caloriesIntook : userMeal.caloriesIntook + calories,
+        proteinsIntook : userMeal.proteinsIntook +  proteins
       },
     });
 
-    res.status(200).json({ message: 'Meal deleted successfully', updatedMeals });
+    res.status(200).json({ message: 'Meal deleted successfully', "ok": true, updatedMeals });
   } catch (error) {
     console.error('Error deleting meal:', error);
     res.status(500).json({ message: 'Failed to delete meal', error });
@@ -99,34 +120,34 @@ app.post('/addMealtoDaysPlan', async (req, res) => {
     const email = req.body.email;
     const recepie = req.body.recepie;
     const addRecepie = await prisma.userMeal.findFirst({
-    where : {email:email}
-    // orderBy : {createdAt : 'desc'}
+      where: { email: email }
+      // orderBy : {createdAt : 'desc'}
     });
     console.log(addRecepie)
-    if(addRecepie){
-      
+    if (addRecepie) {
+
       const updateRecepies = Array.isArray(addRecepie.recepies)
-      ?[...addRecepie.recepies,recepie]
-      :[addRecepie.recepies,recepie]
+        ? [...addRecepie.recepies, recepie]
+        : [addRecepie.recepies, recepie]
 
       await prisma.userMeal.update({
-        where : {id : addRecepie.id},
-        data : {recepies : updateRecepies}
+        where: { id: addRecepie.id },
+        data: { recepies: updateRecepies }
       })
-      
-      res.status(200).json({ message: 'Meal added successfully', data : addRecepie, ok:true });
-    }
-    else{
-      await prisma.userMeal.create({
-      data: {
-        email : email,
-        recepies: [recepie] 
-      }
-    });
 
-    res.status(200).json({ message: 'New user recipe record created',ok:true });
+      res.status(200).json({ message: 'Meal added successfully', data: addRecepie, ok: true });
     }
-    
+    else {
+      await prisma.userMeal.create({
+        data: {
+          email: email,
+          recepies: [recepie]
+        }
+      });
+
+      res.status(200).json({ message: 'New user recipe record created', ok: true });
+    }
+
   } catch (error) {
     console.error('Error adding meal:', error);
     res.status(500).json({ message: 'Failed to add meal', error });
@@ -228,7 +249,3 @@ app.listen(PORT, () => {
   console.log(`Cookiq Backend running on port ${PORT}`);
   console.log(`Access it at http://localhost:${PORT}`);
 });
-
-// process.on('beforeExit', async () => {
-//   await prisma.$disconnect();
-// });

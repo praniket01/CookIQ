@@ -2,6 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useState } from 'react';
 import { Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { useCalorieContext } from '../../context/caloriesContext';
 import { useMealContext } from '../../context/MealContext';
 import { UserDetailContext } from "../../context/UserDetailContext";
 import { GradientBackground } from "../ui/GradientProvider";
@@ -12,6 +13,7 @@ const RecipeList = ({ recipes }) => {
   const { user } = useContext(UserDetailContext);
   const [modalVisible, setModalVisible] = useState(false);
   const { meals, addMeal } = useMealContext();
+  const { userCalories } = useCalorieContext();
 
 
   const handleCardPress = (recipe) => {
@@ -21,9 +23,9 @@ const RecipeList = ({ recipes }) => {
 
   const addRecepieToPlan = async () => {
     try {
+      console.log(userCalories);
+      if (meals.length < 3 && (userCalories.data.caloriesIntook <= user.calories || userCalories.data.proteinsIntook <= user.proteins)) {
 
-      if (meals.length < 3) {
-        console.log("Meals count : ", meals.length)
         const email = user.email;
         const res = await fetch('http://192.168.1.12:3000/addMealtoDaysPlan', {
           method: 'POST',
@@ -38,7 +40,6 @@ const RecipeList = ({ recipes }) => {
 
         const body = await res.json();
         if (body.ok) {
-          // Alert.alert("Information", " MEAL Added");
           Toast.show({
             type: "success",
             text1: "Meal Added",
@@ -54,12 +55,22 @@ const RecipeList = ({ recipes }) => {
         }
       }
       else {
-        Toast.show({
-          type: "error",
-          text1: "Meals Limit reached" ,
-          text2 : "You've already added 3 meals today",
-          position: "bottom"
-        })
+        if (meals.length >= 3) {
+          Toast.show({
+            type: "error",
+            text1: "Meals Limit reached",
+            text2: "You've already added 3 meals today",
+            position: "bottom"
+          })
+        }
+        else if (userCalories.data.caloriesIntook >= user.calories || userCalories.data.proteinsIntook >= user.proteins) {
+          Toast.show({
+            type: "error",
+            text1: "Goals already achieved",
+            text2: "You've already completed today's target!",
+            position: "bottom"
+          })
+        }
         setModalVisible(false);
       }
 

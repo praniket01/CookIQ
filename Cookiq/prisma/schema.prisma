@@ -31,5 +31,7 @@ model UserMeal {
   id        Int     @id @default(autoincrement())
   email     String  @unique
   recepies  Json
+  caloriesIntook  Int  @default(0)
+  proteinsIntook  Int @default(0)
   createdAt DateTime @default(now())
 }

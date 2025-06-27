@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useContext, useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useCalorieContext } from '../../context/caloriesContext';
 import { useMealContext } from "../../context/MealContext";
 import { UserDetailContext } from "../../context/UserDetailContext";
 import { DashboardCard } from "../components/DashboardCard";
@@ -12,7 +13,8 @@ import { GradientBackground } from "../ui/GradientProvider";
 const Home = () => {
 
   const { user } = useContext(UserDetailContext);
-  const { meals,setMeals } = useMealContext();
+  const { meals, setMeals } = useMealContext();
+  const {userCalories,setUserCalories} = useCalorieContext();
   const router = useRouter();
 
 
@@ -37,10 +39,26 @@ const Home = () => {
     })
     const data = await res.json();
     setMeals(data.recepies.recepies);
+
+    const fetcheduserCalories = await fetch('http://192.168.1.12:3000/getUserCalories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: user.email
+      })
+    })
+
+    if (fetcheduserCalories.ok) {
+      const data1 = await fetcheduserCalories.json();
+      console.log("data1",data1)
+      setUserCalories(()=> data1);
+      
+    } 
   }
+console.log("Usercalories",userCalories);
 
-
-  console.log("meals.count", meals.length);
   return (
     <GradientBackground>
       <ScrollView

@@ -24,7 +24,6 @@ const HomePage = () => {
 
   const router = useRouter();
   const { user, setUser } = useContext(UserDetailContext);
-
   useEffect(() => {
 
     const unSubscribe = onAuthStateChanged(auth, async (userInfo) => {
@@ -53,6 +52,9 @@ const HomePage = () => {
         }
 
       }
+
+      
+
     })
     return () => unSubscribe();
   }, [])

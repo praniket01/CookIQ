@@ -1,23 +1,68 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useState } from 'react';
-import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useMealContext } from '../../context/MealContext';
 import { UserDetailContext } from '../../context/UserDetailContext';
+import { useCalorieContext } from '../../context/caloriesContext';
 import { GradientHeading } from './GradientHeading';
+
 
 const DaysMeal = ({ mealList }) => {
 
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const {user} = useContext(UserDetailContext);
-  const {meals,setMeals} = useMealContext();
+  const { user } = useContext(UserDetailContext);
+  const { meals, setMeals } = useMealContext();
+  const { userCalories } = useCalorieContext();
 
   const handleCardPress = (meal) => {
     setSelectedMeal(meal);
     setModalVisible(true);
   };
 
+
   const markMealAsComplete = async () => {
+    const email = user.email;
+    let cal = selectedMeal.calories.split(" ");
+    let prot = selectedMeal.proteins.split(" ");
+
+    const calories = parseInt(cal[0]);
+    const proteins = parseInt(prot[0]);
+    const res = await fetch('http://192.168.1.12:3000/markAsComplete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        title: selectedMeal.title,
+        calories: calories,
+        proteins: proteins
+      })
+    }
+    );
+
+    const data = await res.json();
+    if (data.ok) {
+      userCalories.data.caloriesIntook += calories;
+      userCalories.data.proteinsIntook += proteins;
+      setModalVisible(false);
+      setMeals(meals.filter(meal => {
+        return meal.title !== selectedMeal.title;
+      }));
+      console.log("Meals-", meals)
+      Toast.show({
+        type: "success",
+        text1: "Meal Eaten",
+        position: "bottom"
+      })
+
+    }
+
+
+  };
+  const removeMeal = async () => {
     // console.log("Meal marked as complete:", selectedMeal?.title);
     const email = user.email;
     const res = await fetch('http://192.168.1.12:3000/markAsComplete', {
@@ -27,14 +72,20 @@ const DaysMeal = ({ mealList }) => {
       },
       body: JSON.stringify({
         email: email,
-        title : selectedMeal.title
+        title: selectedMeal.title
       })
     }
     );
 
     const data = await res.json();
     setMeals((prevMeals) => prevMeals.filter(m => m.title !== selectedMeal.title));
+
     setModalVisible(false);
+    Toast.show({
+      type: "success",
+      text1: "Meal Removed",
+      position: "bottom"
+    })
 
 
   };
@@ -51,7 +102,7 @@ const DaysMeal = ({ mealList }) => {
         }}
       >
         <GradientHeading />
-        <Text
+        {/* <Text
           style={{
             textAlign: 'center',
             fontSize: 16,
@@ -59,7 +110,16 @@ const DaysMeal = ({ mealList }) => {
           }}
         >
           No meals for today!
-        </Text>
+        </Text> */}
+        <Image
+          source={require('../../assets/images/No-data.png')}
+          contentFit="cover"
+          style={{
+            height: 400,
+            width: 400,
+            // marginBottom: 150
+          }}
+        />
       </View>
     );
   }
@@ -160,7 +220,7 @@ const DaysMeal = ({ mealList }) => {
               </Text>
 
               <TouchableOpacity
-                onPress={markMealAsComplete}
+                onPress={removeMeal}
                 style={{
                   backgroundColor: '#fa7b57',
                   padding: 12,
