@@ -7,7 +7,7 @@ import { UserDetailContext } from "../../context/UserDetailContext";
 import { DashboardCard } from "../components/DashboardCard";
 import { DaysMeal } from '../components/DaysMeal';
 import GenerateRecipeCard from '../components/GenerateRecepie';
-import { Header } from "../components/Header";
+import { Header } from '../components/Header';
 import { GradientBackground } from "../ui/GradientProvider";
 
 const Home = () => {
@@ -17,7 +17,7 @@ const Home = () => {
   const {userCalories,setUserCalories} = useCalorieContext();
   const router = useRouter();
 
-
+// console.log(user);
   useEffect(() => {
     if (!user.weight) {
       router.replace('/preference')
@@ -39,7 +39,7 @@ const Home = () => {
     })
     const data = await res.json();
     setMeals(data.recepies.recepies);
-
+    console.log("Arrived");
     const fetcheduserCalories = await fetch('http://192.168.1.12:3000/getUserCalories', {
       method: 'POST',
       headers: {
@@ -52,13 +52,11 @@ const Home = () => {
 
     if (fetcheduserCalories.ok) {
       const data1 = await fetcheduserCalories.json();
-      console.log("data1",data1)
       setUserCalories(()=> data1);
       
     } 
   }
-console.log("Usercalories",userCalories);
-
+// console.log(user);
   return (
     <GradientBackground>
       <ScrollView

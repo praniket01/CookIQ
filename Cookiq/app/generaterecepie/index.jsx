@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient'; // Ensure expo-linear-gradient is installed
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import LoadingComponent from '../components/LoadingComponent';
 import RecipeList from '../components/RecipeList';
 
@@ -22,16 +23,20 @@ const GenerateRecipeScreen = () => {
 
   const handleSuggestionPress = (suggestion) => {
 
-    // setRecipePrompt(prevPrompt =>
-    //   prevPrompt ? `${prevPrompt}, ${suggestion}` : suggestion
-    // );
+   
     setRecipePrompt(suggestion);
     setSuggestionSelected(suggestion);
   };
 
   const handleSubmit = async () => {
     if (!recipePrompt.trim()) {
-      Alert.alert('Empty Prompt', 'Please enter some details for the recipe.');
+      Toast.show({
+        "text1" : "Empty Prompt",
+        "text2" : "Please enter some details for the recipe",
+        type : "error",
+        "swipeable" : true,
+        "position" : "bottom",
+      })
       return;
     }
 
@@ -86,7 +91,7 @@ const GenerateRecipeScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#0f1538', '#131624', '#0d0e12']} // Dark gradient background
+      colors={['#0f1538', '#131624', '#0d0e12']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{ flex: 1, paddingHorizontal: 20, paddingTop: 60 }}

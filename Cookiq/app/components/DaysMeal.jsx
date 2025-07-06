@@ -51,7 +51,6 @@ const DaysMeal = ({ mealList }) => {
       setMeals(meals.filter(meal => {
         return meal.title !== selectedMeal.title;
       }));
-      console.log("Meals-", meals)
       Toast.show({
         type: "success",
         text1: "Meal Eaten",
@@ -63,7 +62,6 @@ const DaysMeal = ({ mealList }) => {
 
   };
   const removeMeal = async () => {
-    // console.log("Meal marked as complete:", selectedMeal?.title);
     const email = user.email;
     const res = await fetch('http://192.168.1.12:3000/markAsComplete', {
       method: 'POST',

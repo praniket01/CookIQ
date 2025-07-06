@@ -85,7 +85,6 @@ const DashboardCard = () => {
     }
   }, [userCalories,userCalories.data?.caloriesIntook,userCalories.data?.proteinsIntook]);
 
-  console.log("Inside Dashboard", userCalories)
 
 
 

@@ -3,6 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useContext, useState } from 'react';
 import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { UserDetailContext } from '../../context/UserDetailContext';
 import { auth } from '../../services/FirebaseConfig';
 import colors from '../../shared/colors';
@@ -40,7 +41,6 @@ const Signup = () => {
                         const data = await res.json();
                         Alert.alert('Success', 'User registered successfully!');
                         setUser(data.user);
-                        //TODO Navigate to Home Screen
                         setName('');
                         setEmail('');
                         setPassword('')
@@ -67,137 +67,148 @@ const Signup = () => {
     }
 
     return (
-        <LinearGradient
-            colors={['#2c3e50', '#000000']}
-            style={{ flex: 1 }}
+        <KeyboardAwareScrollView
+            contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: 20,
+            }}
+            enableOnAndroid={true}
+            keyboardShouldPersistTaps="handled"
         >
+            <LinearGradient
+                colors={['#2c3e50', '#000000']}
+                style={{ flex: 1 }}
+            >
 
-            <View style={{
-                display: "flex",
-                alignItems: "center",
-            }}>
-                <Image
-                    style={{
-                        width: 500,
-                        height: 500,
-                    }}
-                    source={require('../../assets/images/SignUp.png')} />
-                <Text style={{
-                    fontWeight: "bold",
-                    fontSize: 35,
-                    color: colors.WHITE,
-                    fontFamily: "Gill Sans",
-                    marginTop: 20
-                }}>
-                    Create New Account
-                </Text>
                 <View style={{
-                    marginTop: 50,
-                    width: '90%',
+                    display: "flex",
+                    alignItems: "center",
                 }}>
-                   
-                    <TextInput
+                    <Image
                         style={{
-                            height: 50,
-                            backgroundColor: '#1c1c2e',
-                            borderRadius: 12,
-                            paddingHorizontal: 15,
-                            marginBottom: 20,
-                            color: '#fff',
-                            fontSize: 16,
+                            width: 500,
+                            height: 500,
                         }}
-                        placeholder="Name"
-                        placeholderTextColor="#ccc"
-                        onChangeText={setName}
-                        value={name}
-                    />
-                    <TextInput
-                        style={{
-                            height: 50,
-                            backgroundColor: '#1c1c2e',
-                            borderRadius: 12,
-                            paddingHorizontal: 15,
-                            marginBottom: 20,
-                            color: '#fff',
-                            fontSize: 16,
-                        }}
-                        placeholder="Email"
-                        placeholderTextColor="#ccc"
-                        onChangeText={setEmail}
-                        value={email}
-                    />
-                    <TextInput
-                        style={{
-                            height: 50,
-                            backgroundColor: '#1c1c2e',
-                            borderRadius: 12,
-                            paddingHorizontal: 15,
-                            marginBottom: 20,
-                            color: '#fff',
-                            fontSize: 16,
-                        }}
-                        placeholder="Password"
-                        placeholderTextColor="#ccc"
-                        secureTextEntry
-                        onChangeText={setPassword}
-                        password={true}
-                    />
-                </View>
-                <View
-                    style={{
-                        marginTop: 15,
-                        width: "90%"
-                    }}
-                >
+                        source={require('../../assets/images/SignUp.png')} />
+                    <Text style={{
+                        fontWeight: "bold",
+                        fontSize: 35,
+                        color: colors.WHITE,
+                        fontFamily: "Gill Sans",
+                        marginTop: 20
+                    }}>
+                        Create New Account
+                    </Text>
+                    <View style={{
+                        marginTop: 50,
+                        width: '90%',
+                    }}>
 
-                    <TouchableOpacity
-                        onPress={onClick}
+                        <TextInput
+                            style={{
+                                height: 50,
+                                backgroundColor: '#1c1c2e',
+                                borderRadius: 12,
+                                paddingHorizontal: 15,
+                                marginBottom: 20,
+                                color: '#fff',
+                                fontSize: 16,
+                            }}
+                            placeholder="Name"
+                            placeholderTextColor="#ccc"
+                            onChangeText={setName}
+                            value={name}
+                        />
+                        <TextInput
+                            style={{
+                                height: 50,
+                                backgroundColor: '#1c1c2e',
+                                borderRadius: 12,
+                                paddingHorizontal: 15,
+                                marginBottom: 20,
+                                color: '#fff',
+                                fontSize: 16,
+                            }}
+                            placeholder="Email"
+                            placeholderTextColor="#ccc"
+                            onChangeText={setEmail}
+                            value={email}
+                        />
+                        <TextInput
+                            style={{
+                                height: 50,
+                                backgroundColor: '#1c1c2e',
+                                borderRadius: 12,
+                                paddingHorizontal: 15,
+                                marginBottom: 20,
+                                color: '#fff',
+                                fontSize: 16,
+                            }}
+                            placeholder="Password"
+                            placeholderTextColor="#ccc"
+                            secureTextEntry
+                            onChangeText={setPassword}
+                            password={true}
+                        />
+                    </View>
+                    <View
                         style={{
-                            marginTop: 10,
-                            borderRadius: 15,
-                            overflow: 'hidden',
+                            marginTop: 15,
+                            width: "90%"
                         }}
                     >
-                        <LinearGradient
-                            colors={['#10b589', '#65ad99', '#75b4c7']}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
+
+                        <TouchableOpacity
+                            onPress={onClick}
                             style={{
-                                paddingVertical: 14,
-                                alignItems: 'center',
+                                marginTop: 10,
                                 borderRadius: 15,
+                                overflow: 'hidden',
                             }}
                         >
-                            <Text
+                            <LinearGradient
+                                colors={['#10b589', '#65ad99', '#75b4c7']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
                                 style={{
-                                    color: '#fff',
-                                    fontSize: 18,
-                                    fontWeight: 'bold',
+                                    paddingVertical: 14,
+                                    alignItems: 'center',
+                                    borderRadius: 15,
                                 }}
                             >
-                                Sign Up
-                            </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: 18,
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    Sign Up
+                                </Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
 
-                    <Text style={{
-                        color: colors.WHITE, textAlign: "center",
-                        fontSize: 15, marginTop: 15
-                    }}>Already have an Account?
-                    </Text>
-                    <Text style={{
-                        color: colors.LIGHTWHITE, textAlign: "center",
-                        fontSize: 15, marginTop: 10, fontWeight: "bold"
-                    }}>
-                        <Link href={'/auth/Signin'}>
+                        <Text style={{
+                            color: colors.WHITE, textAlign: "center",
+                            fontSize: 15, marginTop: 15
+                        }}>Already have an Account?
+                        </Text>
+                        <Text style={{
+                            color: colors.LIGHTWHITE, textAlign: "center",
+                            fontSize: 15, marginTop: 10, fontWeight: "bold"
+                        }}>
+                            <Link href={'/auth/Signin'}>
 
-                            Sign In
-                        </Link>
-                    </Text>
+                                Sign In
+                            </Link>
+                        </Text>
 
-                </View >
-            </View>
-        </LinearGradient>
+                    </View >
+                </View>
+            </LinearGradient>
+        </KeyboardAwareScrollView>
 
     )
 }

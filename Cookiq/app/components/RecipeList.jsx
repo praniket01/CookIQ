@@ -23,7 +23,6 @@ const RecipeList = ({ recipes }) => {
 
   const addRecepieToPlan = async () => {
     try {
-      console.log(userCalories);
       if (meals.length < 3 && (userCalories.data.caloriesIntook <= user.calories || userCalories.data.proteinsIntook <= user.proteins)) {
 
         const email = user.email;

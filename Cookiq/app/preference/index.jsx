@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useContext, useState } from 'react';
 import { Alert, Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { UserDetailContext } from '../../context/UserDetailContext';
 
 const { width } = Dimensions.get('window');
@@ -13,6 +14,8 @@ const ProfileSetupScreen = () => {
   const [weight, setWeight] = useState('');
   const [selectedGoal, setSelectedGoal] = useState(null);
   const [selectedGender, setSelectedGender] = useState(null);
+  const [weightError, setWeightError] = useState('');
+  const [heightError, setHeightError] = useState('');
 
   const router = useRouter();
   const { user, setUser } = useContext(UserDetailContext);
@@ -20,14 +23,38 @@ const ProfileSetupScreen = () => {
   const goals = ['Muscle Gain', 'Cutting', 'Bulking'];
   const genders = ['Male', 'Female'];
 
-
-
   const onCreateProfile = async () => {
     let calculatedCalories = '';
     let calculatedProteins = '';
 
     if (!height || !weight || !selectedGoal || !selectedGender) {
-      Alert.alert('Missing Information', 'Please enter your height, weight, and select a goal.');
+      Toast.show({
+        "text1": "Missing Information",
+        "text2": "Please enter your height, weight, and select a goal!",
+        "type": "error",
+        "position": "bottom",
+        "bottomOffset" : 120
+      })
+      return;
+    }
+
+    if (height > 230 || height < 145) {
+      Toast.show({
+        "text1": "Iput validation failed",
+        "text2": "Please enter height in prescribed value",
+        "type": "error",
+        "position": "bottom"
+      })
+      return;
+    }
+
+    if (weight < 0 || weight > 150) {
+      Toast.show({
+        "text1": "Iput validation failed",
+        "text2": "Please enter weight in prescribed value",
+        "type": "error",
+        "position": "bottom"
+      })
       return;
     }
 
@@ -46,7 +73,6 @@ const ProfileSetupScreen = () => {
 
     const aiData = await AiResponse.json();
 
-
     const jsonMatch = aiData.dietPlan.match(/```json\s*([\s\S]*?)\s*```/);
     if (jsonMatch && jsonMatch[1]) {
 
@@ -55,10 +81,10 @@ const ProfileSetupScreen = () => {
 
       calculatedCalories = parsedDietPlan.Calories.toString();
       calculatedProteins = parsedDietPlan.proteins.toString();
-      
+
     }
 
-    
+
     const res = await fetch('http://192.168.1.12:3000/updateprofile', {
       method: 'POST',
       headers: {
@@ -76,7 +102,12 @@ const ProfileSetupScreen = () => {
     })
     const data = await res.json();
     if (data.user) {
-      Alert.alert('Profile Created', 'Your profile has been created successfully!');
+      Toast.show({
+        "text1": "Profile Created",
+        "text2": "Your profile has been created successfully!",
+        "type": "success",
+        "position": "bottom"
+      })
       setUser(data.user);
       router.replace('/(tabs)/Home');
     }
@@ -142,50 +173,99 @@ const ProfileSetupScreen = () => {
           width: '100%',
           marginBottom: 50,
         }}>
-          <TextInput
-            style={{
-              flex: 1,
 
-              padding: 18,
-              borderRadius: 15,
-              color: '#fff',
-              fontSize: 18,
-              marginRight: 15,
-              borderWidth: 1,
-              borderColor: 'rgba(255, 255, 255, 0.4)',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.25,
-              shadowRadius: 5,
-            }}
-            placeholder="Height (cm)"
-            placeholderTextColor="#8c869c"
-            keyboardType="numeric"
-            value={height}
-            onChangeText={setHeight}
-          />
-          <TextInput
-            style={{
-              flex: 1,
+          <View style={{ width: '48%' }}>
+            {heightError ? (
+              <Text style={{
+                color: 'red',
+                marginBottom: 5,
+                fontSize: 14,
+              }}>
+                {heightError}
+              </Text>
+            ) : null}
+            <TextInput
+              style={{
+                padding: 18,
+                borderRadius: 15,
+                color: '#fff',
+                fontSize: 18,
+                borderWidth: 1,
+                borderColor: heightError ? 'red' : 'rgba(255, 255, 255, 0.4)',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.25,
+                shadowRadius: 5,
+              }}
+              placeholder="Height (cm)"
+              placeholderTextColor="#8c869c"
+              keyboardType="numeric"
+              value={height}
+              onChangeText={(text) => {
+                const numericValue = text.replace(/[^0-9]/g, '');
+                const number = parseInt(numericValue, 10);
 
-              padding: 18,
-              borderRadius: 15,
-              color: '#fff',
-              fontSize: 18,
-              marginLeft: 15,
-              borderWidth: 1,
-              borderColor: 'rgba(255, 255, 255, 0.4)',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.25,
-              shadowRadius: 5,
-            }}
-            placeholder="Weight (kg)"
-            placeholderTextColor="#8c869c"
-            keyboardType="numeric"
-            value={weight}
-            onChangeText={setWeight}
-          />
+                if (numericValue === '') {
+                  setHeight('');
+                  setHeightError('');
+                } else if (!isNaN(number)) {
+                  if (number >= 145 && number <= 230) {
+                    setHeight(numericValue);
+                    setHeightError('');
+                  } else {
+                    setHeight(numericValue);
+                    setHeightError('Height must be between 145cm and 230cm');
+                  }
+                }
+              }}
+            />
+          </View>
+          <View style={{ width: '48%' }}>
+            {weightError ? (
+              <Text style={{
+                color: 'red',
+                marginBottom: 5,
+                fontSize: 14,
+              }}>
+                {weightError}
+              </Text>
+            ) : null}
+            <TextInput
+              style={{
+                padding: 18,
+                borderRadius: 15,
+                color: '#fff',
+                fontSize: 18,
+                borderWidth: 1,
+                borderColor: weightError ? 'red' : 'rgba(255, 255, 255, 0.4)',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.25,
+                shadowRadius: 5,
+              }}
+              placeholder="Weight (kg)"
+              placeholderTextColor="#8c869c"
+              keyboardType="numeric"
+              value={weight}
+              onChangeText={(text) => {
+                const numericValue = text.replace(/[^0-9]/g, '');
+                const number = parseInt(numericValue, 10);
+
+                if (numericValue === '') {
+                  setWeight('');
+                  setWeightError('');
+                } else if (!isNaN(number)) {
+                  if (number >= 0 && number <= 150) {
+                    setWeight(numericValue);
+                    setWeightError('');
+                  } else {
+                    setWeight(numericValue);
+                    setWeightError('Weight must be between 0 and 150');
+                  }
+                }
+              }}
+            />
+          </View>
         </View>
 
         <View style={{ width: '100%', marginBottom: 40 }}>

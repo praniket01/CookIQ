@@ -2,7 +2,7 @@
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 const Navbar = () => {
   const router = useRouter();
@@ -28,16 +28,15 @@ const Navbar = () => {
             backgroundColor: 'rgba(15, 21, 56, 0.5)',
           }}
         >
-          {/* App title */}
-          <Text style={{
-            color: '#FFD700',
-            fontSize: 22,
-            fontWeight: 'bold',
-          }}>
-            CookIQ
-          </Text>
+          <Image 
+            source={require('../../assets/images/Logosplast.png')} 
+            style={{
+              width: 60,
+              height: 60,
+            }}
+          />
+            
 
-          {/* Get Started Button */}
           <TouchableOpacity
             onPress={() => router.push('/auth/Signin')}
             style={{

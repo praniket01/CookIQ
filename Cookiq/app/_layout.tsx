@@ -7,7 +7,7 @@ import { CaloriesProvider } from "../context/caloriesContext.jsx";
 
 export default function RootLayout() {
 
-  const [user,setUser] = useState();
+  const [user,setUser] = useState({});
   return(
     <UserDetailContext.Provider value={{user,setUser}}>
       <MealProvider>

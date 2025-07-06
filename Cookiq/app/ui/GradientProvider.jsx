@@ -1,4 +1,3 @@
-// components/shared/GradientBackground.jsx
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet } from 'react-native';
 
@@ -19,7 +18,6 @@ const GradientBackground = ({ children, style }) => {
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
-    // By default, center content. Can be overridden by 'style' prop if needed.
     justifyContent: 'center',
     alignItems: 'center',
   },

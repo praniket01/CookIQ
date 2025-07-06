@@ -5,7 +5,6 @@ import colors from '../../shared/colors';
 
 export default function _layout() {
     return (
-        // <MealProvider>
             <Tabs
                 screenOptions={{
                     tabBarActiveTintColor: colors.WHITE,
@@ -17,6 +16,7 @@ export default function _layout() {
                     headerShown: false
                 }}
             >
+
                 <Tabs.Screen name='Home'
                     options={{
                         tabBarIcon: ({ color, size }) => {
@@ -58,15 +58,14 @@ export default function _layout() {
                         tabBarIcon: ({ color, size }) => {
                             return <HugeiconsIcon
                                 icon={UserIcon}
-                                size={20}
+                                size={size}
                                 color={color}
                                 variant="stroke"
                             />
                         }
                     }}
                 />
-            </Tabs>
-        // </MealProvider>
 
+            </Tabs>
     )
 }

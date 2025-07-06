@@ -121,7 +121,6 @@ app.post('/addMealtoDaysPlan', async (req, res) => {
     const recepie = req.body.recepie;
     const addRecepie = await prisma.userMeal.findFirst({
       where: { email: email }
-      // orderBy : {createdAt : 'desc'}
     });
     console.log(addRecepie)
     if (addRecepie) {

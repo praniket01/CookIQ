@@ -1,16 +1,15 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged } from "firebase/auth";
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Animated, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GradientBackground } from "../app/ui/GradientProvider";
+import auth from "../services/FirebaseConfig";
 import FeaturesComponent from './components/FeaturesComponent';
 import { Navbar } from './components/Navbar';
 import { Slideshow } from './components/SlideShow';
-
-
-import auth from "../services/FirebaseConfig";
+import { SplashScreen } from './splashScreen';
 
 import { useContext, useEffect } from 'react';
 import { UserDetailContext } from "../context/UserDetailContext";
@@ -23,11 +22,18 @@ const SCROLL_DISTANCE = IMAGE_HEIGHT * 0.8;
 const HomePage = () => {
 
   const router = useRouter();
+  const [showSplash, setShowSplash] = useState(true);
   const { user, setUser } = useContext(UserDetailContext);
+
   useEffect(() => {
 
-    const unSubscribe = onAuthStateChanged(auth, async (userInfo) => {
+    let splashTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
 
+    const unSubscribe = onAuthStateChanged(auth, async (userInfo) => {
+      console.log("auth",auth)
+      console.log("Userinfo",userInfo)
       if (!userInfo) {
         return;
       }
@@ -43,20 +49,20 @@ const HomePage = () => {
       })
       if (res.ok) {
         const data = await res.json();
-        if (data && data.userDetail) {
+        if (data && data?.userDetail) {
           setUser(data.userDetail);
-          router.replace('/(tabs)/Home');
+          router.replace('/(tabs)/Home')
         }
         else {
-          router.replace('/preferences');
+          router.replace('/preferences')
         }
 
       }
-
-      
-
     })
-    return () => unSubscribe();
+    return () => {
+      clearTimeout(splashTimer);
+      unSubscribe();
+    };
   }, [])
 
 
@@ -74,9 +80,8 @@ const HomePage = () => {
     extrapolate: 'clamp',
   });
 
-
-
   return (
+    (showSplash) ? (< SplashScreen/>) :(
     <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
       <GradientBackground>
         <Navbar />
@@ -89,11 +94,11 @@ const HomePage = () => {
           contentContainerStyle={{ paddingBottom: 10, flexGrow: 1 }}
         >
           <LinearGradient
-              colors={['transparent', 'rgba(13, 14, 18, 0.9)', '#0d0e12']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={{ flex: 1 }}
-            />
+            colors={['transparent', 'rgba(13, 14, 18, 0.9)', '#0d0e12']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{ flex: 1 }}
+          />
           <Slideshow />
           <View style={{
             backgroundColor: '#0d0e12',
@@ -169,6 +174,7 @@ const HomePage = () => {
         </Animated.ScrollView>
       </GradientBackground>
     </SafeAreaView>
+  )
   );
 };
 
