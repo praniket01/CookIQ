@@ -12,16 +12,12 @@ const About = () => {
   const router = useRouter();
 
   const { user, setUser } = useContext(UserDetailContext);
-  console.log(user);
   const handleLogout = async () => {
     try {
       signOut(auth).then(()=>{
-        console.log("User logged out successfully")
-        console.log(user);
         setUser({});
         router.replace('/');
       }).catch((err)=>{
-        console.log("Inside catch",err)
       });
   
     } catch (error) {

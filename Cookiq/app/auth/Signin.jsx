@@ -15,7 +15,6 @@ const Signin = () => {
     const { user, setUser } = useContext(UserDetailContext);
 
     const onClick = async () => {
-        console.log("hitting")
         signInWithEmailAndPassword(auth, email, password)
             .then(async(userCredential) => {
                 const user = userCredential.user;
@@ -34,9 +33,7 @@ const Signin = () => {
                     })
                 })
                 if (res.ok) {
-                    console.log("OK")
                     const data = await res.json();
-                    console.log("Data inside signing ",data);
                     setUser(data.user);
                     router.replace('../(tabs)/Home')
                 }

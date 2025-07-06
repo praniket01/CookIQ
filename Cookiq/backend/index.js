@@ -56,7 +56,15 @@ app.post('/users', async (req, res) => {
       }
     }
     );
-    res.status(201).json({ message: 'User registered successfully!', user: newUser });
+
+    const userMeal = await prisma.userMeal.create({
+      data : {
+        email : email,
+        recepies : [],
+      }
+    })
+
+    res.status(201).json({ message: 'User registered successfully!', user: newUser , userMeal : userMeal });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ message: 'Internal server error during user registration.' });

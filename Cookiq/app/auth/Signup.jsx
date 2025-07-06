@@ -54,7 +54,6 @@ const Signup = () => {
                 }).catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
-                    console.log("error in create user with email", error)
                     Alert.alert("Registration failed", errorMessage)
                     return;
                 })

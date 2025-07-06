@@ -23,7 +23,7 @@ const RecipeList = ({ recipes }) => {
 
   const addRecepieToPlan = async () => {
     try {
-      if (meals.length < 3 && (userCalories.data.caloriesIntook <= user.calories || userCalories.data.proteinsIntook <= user.proteins)) {
+      if (meals.length < 3 && (userCalories?.data.caloriesIntook <= user.calories || userCalories?.data.proteinsIntook <= user.proteins)) {
 
         const email = user.email;
         const res = await fetch('http://192.168.1.12:3000/addMealtoDaysPlan', {
