@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node index.js",
-    "build" : "prisma generate"
+    "build" : "./setup.sh"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
