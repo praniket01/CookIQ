@@ -9,11 +9,11 @@ import {
 const { width, height } = Dimensions.get('window');
 
 const images = [
-    require('../../assets/images/homepage2.png'),
-    require('../../assets/images/3.png'),
-    require('../../assets/images/4.png'),
-    require('../../assets/images/fruits.png'),
-    require('../../assets/images/meal.png'),
+    require('../../assets/images/homepage2.jpg'),
+    require('../../assets/images/3.jpg'),
+    require('../../assets/images/4.jpg'),
+    require('../../assets/images/fruits.jpg'),
+    require('../../assets/images/meal.jpg'),
 ];
 
 export const Slideshow = () => {

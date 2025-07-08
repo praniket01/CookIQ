@@ -1,4 +1,4 @@
-import { DashboardSpeed02Icon, Home07Icon, SpoonAndForkIcon, UserIcon } from '@hugeicons/core-free-icons';
+import { Home07Icon, UserIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Tabs } from 'expo-router';
 import colors from '../../shared/colors';
@@ -29,7 +29,7 @@ export default function _layout() {
                         }
                     }}
                 />
-                <Tabs.Screen name='Appetite'
+                {/* <Tabs.Screen name='Appetite'
                     options={{
                         tabBarIcon: ({ color, size }) => {
                             return <HugeiconsIcon
@@ -52,7 +52,7 @@ export default function _layout() {
                             />
                         }
                     }}
-                />
+                /> */}
                 <Tabs.Screen name='About'
                     options={{
                         tabBarIcon: ({ color, size }) => {

@@ -90,7 +90,7 @@ const Signup = () => {
                             width: 500,
                             height: 500,
                         }}
-                        source={require('../../assets/images/SignUp.png')} />
+                        source={require('../../assets/images/SignUp.jpg')} />
                     <Text style={{
                         fontWeight: "bold",
                         fontSize: 35,

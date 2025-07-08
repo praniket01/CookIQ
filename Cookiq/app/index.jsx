@@ -33,7 +33,6 @@ const HomePage = () => {
 
     const unSubscribe = onAuthStateChanged(auth, async (userInfo) => {
       console.log("auth",auth)
-      console.log("Userinfo",userInfo)
       if (!userInfo) {
         return;
       }

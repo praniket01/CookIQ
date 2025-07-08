@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package" : "com.cookIq.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -38,6 +39,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "EXPO_PUBLIC_GEMINI_API_KEY": "AIzaSyCeXL1H9QFyVhM8fAgRFfhTBnt4AikwE7E",
+      "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IlV6SXJWd1h0dnprLVRvdzlLZWstc0M1akptWXBvX1VaVkxUZlpnMDRlOFUiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJnb29nbGUtb2F1dGgyfDEwNjUxMTcyODU4MTkyOTIwNzQzMyIsInNjb3BlIjoib3BlbmlkIG9mZmxpbmVfYWNjZXNzIiwiaXNzIjoiYXBpX2tleV9pc3N1ZXIiLCJhdWQiOlsiaHR0cHM6Ly9uZWJpdXMtaW5mZXJlbmNlLmV1LmF1dGgwLmNvbS9hcGkvdjIvIl0sImV4cCI6MTkwNjk4NzI3OSwidXVpZCI6ImJjNzNmNzZmLWNhZGUtNDg2Ny1iNDE4LTYyOWFhOTIwMTYxZCIsIm5hbWUiOiJDb29raXEiLCJleHBpcmVzX2F0IjoiMjAzMC0wNi0wNlQxNDo0MToxOSswMDAwIn0.N8a3PqaE07GTHH-r0U-Hmz05-OkDvNf-L3IiGZ8MBes",
+      "router": {},
+      "eas": {
+        "projectId": "7e15d07a-16ce-4f99-8abe-16ec891239f9"
+      }
     }
   }
 }

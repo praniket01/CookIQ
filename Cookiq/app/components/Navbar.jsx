@@ -29,7 +29,7 @@ const Navbar = () => {
           }}
         >
           <Image 
-            source={require('../../assets/images/Logosplast.png')} 
+            source={require('../../assets/images/Logosplast.jpg')} 
             style={{
               width: 60,
               height: 60,

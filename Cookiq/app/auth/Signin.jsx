@@ -78,7 +78,7 @@ const Signin = () => {
                 >
 
                     <Image
-                        source={require('../../assets/images/LoginImg.png')}
+                        source={require('../../assets/images/LoginImg.jpg')}
                         contentFit="cover"
                         style={{
                             height: 500,

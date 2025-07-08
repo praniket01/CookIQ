@@ -28,7 +28,7 @@ const SplashScreen = () => {
             alignItems: 'center',
         }}>
             <Animated.Image
-                source={require('../assets/images/Logosplast.png')} 
+                source={require('../assets/images/Logosplast.jpg')} 
                 style={[{
                     width: 250,
                     height: 250,
