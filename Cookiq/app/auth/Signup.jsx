@@ -27,7 +27,7 @@ const Signup = () => {
             createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const user = userCredential.user;
-                    const res = await fetch('http://192.168.1.12:3000/users', {
+                    const res = await fetch('https://cookiq-1.onrender.com/users', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

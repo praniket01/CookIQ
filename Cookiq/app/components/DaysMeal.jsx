@@ -29,7 +29,7 @@ const DaysMeal = ({ mealList }) => {
 
     const calories = parseInt(cal[0]);
     const proteins = parseInt(prot[0]);
-    const res = await fetch('http://192.168.1.12:3000/markAsComplete', {
+    const res = await fetch('https://cookiq-1.onrender.com/markAsComplete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ const DaysMeal = ({ mealList }) => {
   };
   const removeMeal = async () => {
     const email = user.email;
-    const res = await fetch('http://192.168.1.12:3000/markAsComplete', {
+    const res = await fetch('https://cookiq-1.onrender.com/markAsComplete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

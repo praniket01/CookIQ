@@ -58,7 +58,7 @@ const ProfileSetupScreen = () => {
       return;
     }
 
-    const AiResponse = await fetch('http://192.168.1.12:3001/generatedietplan', {
+    const AiResponse = await fetch('https://cookiq.onrender.com/generatedietplan', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ const ProfileSetupScreen = () => {
     }
 
 
-    const res = await fetch('http://192.168.1.12:3000/updateprofile', {
+    const res = await fetch('https://cookiq-1.onrender.com/updateprofile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -26,7 +26,7 @@ const RecipeList = ({ recipes }) => {
       if (meals.length < 3 && (userCalories?.data.caloriesIntook <= user.calories || userCalories?.data.proteinsIntook <= user.proteins)) {
 
         const email = user.email;
-        const res = await fetch('http://192.168.1.12:3000/addMealtoDaysPlan', {
+        const res = await fetch('https://cookiq-1.onrender.com/addMealtoDaysPlan', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

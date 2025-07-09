@@ -27,7 +27,7 @@ const Home = () => {
 
   const onPageRefresh = async () => {
     const email = user.email;
-    const res = await fetch('http://192.168.1.12:3000/getDataOnRefresh', {
+    const res = await fetch('https://cookiq-1.onrender.com/getDataOnRefresh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ const Home = () => {
     })
     const data = await res.json();
     setMeals(data.recepies.recepies);
-    const fetcheduserCalories = await fetch('http://192.168.1.12:3000/getUserCalories', {
+    const fetcheduserCalories = await fetch('https://cookiq-1.onrender.com/getUserCalories', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

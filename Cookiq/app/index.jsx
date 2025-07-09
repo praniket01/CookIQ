@@ -37,7 +37,7 @@ const HomePage = () => {
         return;
       }
 
-      const res = await fetch('http://192.168.1.12:3000/getuserdetails', {
+      const res = await fetch('https://cookiq-1.onrender.com/getuserdetails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

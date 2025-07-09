@@ -44,7 +44,7 @@ const GenerateRecipeScreen = () => {
     setGeneratedRecipe([]);
 
     try {
-      const response = await fetch('http://192.168.1.12:3001/generaterecepie', {
+      const response = await fetch('https://cookiq.onrender.com/generaterecepie', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,18 +63,18 @@ const GenerateRecipeScreen = () => {
 
 
       // Commented for development
-      // const imageGenerated = await fetch('http://192.168.1.12:3001/generateImage', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     prompt: recepieTitleArray,
-      //   }),
-      // });
+      const imageGenerated = await fetch('https://cookiq.onrender.com/generateImage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: recepieTitleArray,
+        }),
+      });
 
-      // const result = await imageGenerated.json();
-      // setNebiusImageUrl(result.generatedIMG);
+      const result = await imageGenerated.json();
+      setNebiusImageUrl(result.generatedIMG);
 
 
 
