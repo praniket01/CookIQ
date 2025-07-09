@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useContext, useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { UserDetailContext } from "../../context/UserDetailContext.jsx";
 import { auth } from "../../services/FirebaseConfig.tsx";
@@ -13,16 +13,20 @@ const Signin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { user, setUser } = useContext(UserDetailContext);
+    const [loading, setLoading] = useState(false);
 
     const onClick = async () => {
+
+        setLoading(true);
+
         signInWithEmailAndPassword(auth, email, password)
-            .then(async(userCredential) => {
+            .then(async (userCredential) => {
                 const user = userCredential.user;
                 if (!email || !password) {
                     Alert.alert("Missing Fields", "Please Enter all Fields");
                     return;
                 }
-                const res =await fetch('http://192.168.1.12:3000/getuser', {
+                const res = await fetch('http://192.168.1.12:3000/getuser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -35,11 +39,14 @@ const Signin = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setUser(data.user);
+                    setLoading(false);
                     router.replace('../(tabs)/Home')
+
                 }
                 else {
                     const data = await res.json();
                     Alert.alert("Invalid Credentials", data.message);
+                    setLoading(false);
                 }
 
             })
@@ -47,6 +54,7 @@ const Signin = () => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 Alert.alert(errorMessage);
+                setLoading(false);
             });
 
 
@@ -147,7 +155,15 @@ const Signin = () => {
                                         fontWeight: 'bold',
                                     }}
                                 >
-                                    Sign In
+                                    {
+                                        loading ? (
+                                            <ActivityIndicator size="small" color='#fff' />
+                                        ) : (
+                                            <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>
+                                                Sign In
+                                            </Text>
+                                        )
+                                    }
                                 </Text>
                             </LinearGradient>
                         </TouchableOpacity>

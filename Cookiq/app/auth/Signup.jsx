@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useContext, useState } from 'react';
-import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { UserDetailContext } from '../../context/UserDetailContext';
 import { auth } from '../../services/FirebaseConfig';
@@ -14,6 +14,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { user, setUser } = useContext(UserDetailContext);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const onClick = async () => {
@@ -22,6 +23,7 @@ const Signup = () => {
                 Alert.alert("Missing Fields", "Please enter all Fields");
                 return
             }
+            setLoading(true);
             createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const user = userCredential.user;
@@ -44,23 +46,28 @@ const Signup = () => {
                         setName('');
                         setEmail('');
                         setPassword('')
+                        setLoading(false);
                         router.replace('/(tabs)/Home');
 
                     } else {
                         const errorData = await res.json();
                         Alert.alert('Registration Failed', errorData.message || 'Something went wrong on the server.');
+                        setLoading(false);
                         console.error('Server error:', res.status, errorData);
+
                     }
                 }).catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
                     Alert.alert("Registration failed", errorMessage)
+                    setLoading(false);
                     return;
                 })
 
 
         } catch (error) {
             console.log("error in try-cathc", error)
+            setLoading(false);
         }
 
     }
@@ -177,15 +184,17 @@ const Signup = () => {
                                     borderRadius: 15,
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: '#fff',
-                                        fontSize: 18,
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    Sign Up
-                                </Text>
+
+                                {
+                                    loading ? (
+                                        <ActivityIndicator size="small" color='#fff' />
+                                    ) : (
+                                        <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>
+                                            Sign up
+                                        </Text>
+                                    )
+                                }
+
                             </LinearGradient>
                         </TouchableOpacity>
 

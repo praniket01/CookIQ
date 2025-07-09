@@ -110,7 +110,7 @@ const DaysMeal = ({ mealList }) => {
           No meals for today!
         </Text> */}
         <Image
-          source={require('../../assets/images/No-data.jpg')}
+          source={require('../../assets/images/no-data.jpg')}
           contentFit="cover"
           style={{
             height: 400,
