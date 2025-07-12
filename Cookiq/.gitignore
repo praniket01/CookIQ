@@ -9,6 +9,10 @@ web-build/
 expo-env.d.ts
 
 # Native
+android.os.Handler
+cookiq-release-key.jks
+/android
+/ios
 .kotlin/
 *.orig.*
 *.jks
